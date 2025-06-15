@@ -1,61 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🧠 MAUT Decision Support System – Laravel + Filament
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based decision support system using the **Multi-Attribute Utility Theory (MAUT)** method for evaluating and ranking employees based on multiple weighted criteria.
 
-## About Laravel
+Built with **FilamentPHP**, this system supports:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- 🔢 Multi-criteria employee evaluation
+- 🗂 Batch-based scoring
+- 🧮 Step-by-step MAUT calculation
+- 📊 Normalization, weighted scoring & ranking
+- 📄 PDF export of final results
+- 💡 Clean, responsive UI for admins
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ⚙️ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Feature                    | Description                                                               |
+|----------------------------|---------------------------------------------------------------------------|
+| 🧑‍💼 Employees             | Manage evaluated employees                                                |
+| 🧮 Criteria                 | Define weighted evaluation criteria (e.g. productivity, leadership)       |
+| 📦 Batches                 | Group evaluations into logical batches (e.g. Q1 2025, Marketing Team)     |
+| ✍️ Input Scores            | Input raw scores for each employee per criterion per batch                |
+| 📈 MAUT Scoring            | Normalize scores, apply weights, rank employees                           |
+| 📄 Export to PDF           | Generate professional PDF reports with full scoring breakdown             |
+| 🧮 Supports Cost/Benefit   | (Optional) Handle benefit vs cost-type criteria via `is_benefit` flag     |
 
-## Learning Laravel
+## 🏗️ Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel 10+
+- FilamentPHP 3.x
+- DomPDF (for PDF export)
+- TailwindCSS (via Filament)
+- PHP 8.1+
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🚀 Getting Started
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clone the Repo
 
-## Laravel Sponsors
+```bash
+git clone https://github.com/your-username/maut-filament-app.git
+cd maut-filament-app
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Install Dependencies
 
-### Premium Partners
+```bash
+composer install
+npm install && npm run build
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Environment Setup
 
-## Contributing
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Update your `.env`:
 
-## Code of Conduct
+```env
+DB_DATABASE=maut_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Then run:
 
-## Security Vulnerabilities
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+(Optional) Seed with dummy data:
 
-## License
+```bash
+php artisan db:seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Create an Admin User
+
+```bash
+php artisan tinker
+
+\App\Models\User::create([
+    'name' => 'Admin',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('password'),
+])
+```
+
+### 5. Start the App
+
+```bash
+php artisan serve
+```
+
+Visit: [http://localhost:8000/admin](http://localhost:8000/admin)
+
+## 📁 File Structure Highlights
+
+```bash
+app/
+├── Filament/
+│   ├── Pages/
+│   │   ├── MautScoring.php      # Core MAUT calculation & PDF export
+│   │   ├── InputCriterionValues.php
+│   │   └── EvaluationList.php
+resources/
+├── views/
+│   └── maut/
+│       ├── export.blade.php     # Full printable PDF report
+│       └── partial-scoring-table.blade.php
+```
+
+## 📝 Customization Tips
+
+- To **add new criteria types**, edit the `criteria` table and weights.
+- To enable **cost vs benefit** support, add an `is_benefit` boolean column.
+- You can fully customize the PDF layout via `resources/views/maut/export.blade.php`.
+
+## 🛠 TODO (Future Enhancements)
+
+- ✅ Export to Excel
+- ✅ Chart visualizations (bar/pie/radar)
+- ⏳ Multi-user roles (reviewer vs admin)
+- ⏳ Criteria categories/subgroups
+- ⏳ Audit log or score history
+
+## 📄 License
+
+MIT – free to use and modify.
