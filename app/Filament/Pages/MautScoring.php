@@ -6,10 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use App\Models\Batch;
 use App\Models\Criterion;
-use App\Models\Employee;
-use App\Models\EmployeeCriterionValue;
 use Filament\Pages\Page;
-use Illuminate\Support\Collection;
 
 class MautScoring extends Page
 {
@@ -50,14 +47,18 @@ class MautScoring extends Page
             }
         }
 
-        // Normalization
+        // Normalization with benefit/cost logic
         $normalized = [];
         foreach ($criteria as $criterion) {
             $column = array_column($raw, $criterion->id);
             $max = max($column) ?: 1;
+            $min = min($column) ?: 1;
 
             foreach ($batch->employees as $employee) {
-                $normalized[$employee->id][$criterion->id] = $raw[$employee->id][$criterion->id] / $max;
+                $val = $raw[$employee->id][$criterion->id];
+                $normalized[$employee->id][$criterion->id] = $criterion->type === 'benefit'
+                    ? ($max > 0 ? $val / $max : 0)
+                    : ($val > 0 ? $min / $val : 0);
             }
         }
 
@@ -81,8 +82,8 @@ class MautScoring extends Page
         $this->data = [
             'batch' => $batch,
             'criteria' => $criteria,
-            'employees' => $batch->employees, // ✅ add this
-            'rawData' => $raw,                // ✅ rename for consistency
+            'employees' => $batch->employees,
+            'rawData' => $raw,
             'normalized' => $normalized,
             'ranking' => collect($totals)
                 ->map(fn($score, $id) => [
@@ -91,10 +92,9 @@ class MautScoring extends Page
                 ])
                 ->sortByDesc('score')
                 ->values()
-                ->all(),                      // ✅ add this
+                ->all(),
         ];
     }
-
 
     protected function getHeaderActions(): array
     {
