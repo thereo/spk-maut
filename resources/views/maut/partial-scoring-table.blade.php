@@ -95,7 +95,12 @@
                         </th>
                         @foreach ($criteria as $criterion)
                             <th class="fi-table-header-cell px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                                {{ $criterion->name }}
+                                <div class="flex flex-col items-center">
+                                    <span>{{ $criterion->name }}</span>
+                                    @if(isset($criterion->weight))
+                                        <span class="text-xs text-gray-400 mt-1">(Weight: {{ intval($criterion->weight * 100) }}%)</span>
+                                    @endif
+                                </div>
                             </th>
                         @endforeach
                         <th class="fi-table-header-cell px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">

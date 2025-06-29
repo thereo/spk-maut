@@ -36,7 +36,7 @@ class EvaluationList extends Page implements HasTable
         return [
             Action::make('View')
                 ->label('View')
-                ->icon('heroicon-o-users')
+                ->icon('heroicon-o-eye')
                 ->modalHeading(fn(Batch $record) => "{$record->name}")
                 ->modalContent(function (Batch $record) {
                     $employees = $record->employees()

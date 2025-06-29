@@ -29,7 +29,7 @@
                                         </span>
                                         @if(isset($criterion->weight))
                                             <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200">
-                                                {{ $criterion->weight }}%
+                                                {{ number_format($criterion->weight * 100, 0) }}%
                                             </span>
                                         @endif
                                     </div>
@@ -82,23 +82,37 @@
                                             $employeeScores[] = $value;
                                         }
 
-                                        // Filament-style color coding
                                         $badgeColor = 'gray';
+
                                         if ($value !== null) {
-                                            if ($value >= 4.5) {
-                                                $badgeColor = 'success';
-                                            } elseif ($value >= 3.5) {
-                                                $badgeColor = 'info';
-                                            } elseif ($value >= 2.5) {
-                                                $badgeColor = 'warning';
+                                            if ($criterion->type === 'benefit') {
+                                                // Higher is better
+                                                if ($value >= 4.5) {
+                                                    $badgeColor = 'success';
+                                                } elseif ($value >= 3.5) {
+                                                    $badgeColor = 'info';
+                                                } elseif ($value >= 2.5) {
+                                                    $badgeColor = 'warning';
+                                                } else {
+                                                    $badgeColor = 'danger';
+                                                }
                                             } else {
-                                                $badgeColor = 'danger';
+                                                // Cost/Error: Lower is better
+                                                if ($value <= 2.5) {
+                                                    $badgeColor = 'success';
+                                                } elseif ($value <= 5) {
+                                                    $badgeColor = 'info';
+                                                } elseif ($value <= 7.5) {
+                                                    $badgeColor = 'warning';
+                                                } else {
+                                                    $badgeColor = 'danger';
+                                                }
                                             }
                                         }
                                     @endphp
 
                                     <td class="fi-table-cell p-3 text-center">
-                                        @if($value !== null)
+                                        @if ($value !== null)
                                             <x-filament::badge :color="$badgeColor" size="sm">
                                                 {{ number_format($value, 1) }}
                                             </x-filament::badge>
@@ -107,6 +121,7 @@
                                         @endif
                                     </td>
                                 @endforeach
+
 
                                 <!-- Average Score -->
                                 <td class="fi-table-cell p-3 text-center">
@@ -144,20 +159,16 @@
                 <h4 class="text-sm font-medium text-gray-950 dark:text-white">Performance Scale</h4>
                 <div class="flex items-center gap-x-4">
                     <div class="flex items-center gap-x-2">
-                        <x-filament::badge color="success" size="sm">4.5+</x-filament::badge>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">Excellent</span>
+                        <x-filament::badge color="success" size="sm">Excellent</x-filament::badge>
                     </div>
                     <div class="flex items-center gap-x-2">
-                        <x-filament::badge color="info" size="sm">3.5+</x-filament::badge>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">Good</span>
+                        <x-filament::badge color="info" size="sm">Good</x-filament::badge>
                     </div>
                     <div class="flex items-center gap-x-2">
-                        <x-filament::badge color="warning" size="sm">2.5+</x-filament::badge>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">Average</span>
+                        <x-filament::badge color="warning" size="sm">Average</x-filament::badge>
                     </div>
                     <div class="flex items-center gap-x-2">
-                        <x-filament::badge color="danger" size="sm"><2.5</x-filament::badge>
-                        <span class="text-xs text-gray-600 dark:text-gray-400">Needs Improvement</span>
+                        <x-filament::badge color="danger" size="sm">Needs Improvement</x-filament::badge>
                     </div>
                 </div>
             </div>
