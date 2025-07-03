@@ -35,9 +35,7 @@ class CriterionResource extends Resource
                             ->numeric()
                             ->required()
                             ->minValue(0)
-                            ->maxValue(1)
-                            ->step(0.01)
-                            ->hint('Weight must be between 0 and 1'),
+                            ->maxValue(100),
 
                         Forms\Components\Select::make('type')
                             ->required()

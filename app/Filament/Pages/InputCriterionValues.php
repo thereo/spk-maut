@@ -52,11 +52,16 @@ class InputCriterionValues extends Page implements Forms\Contracts\HasForms
                         return Forms\Components\Fieldset::make($employee->name)
                             ->schema(
                                 $criteria->map(function ($criterion) use ($employee) {
-                                    $key = "{$employee->id}.{$criterion->id}";
-                                    return Forms\Components\TextInput::make("{$employee->id}.{$criterion->id}")
+                                    return Forms\Components\Select::make("{$employee->id}.{$criterion->id}")
                                         ->label($criterion->name)
-                                        ->numeric()
-                                        ->default(0)
+                                        ->options([
+                                            1 => '1',
+                                            2 => '2',
+                                            3 => '3',
+                                            4 => '4',
+                                            5 => '5',
+                                        ])
+                                        ->default(1)
                                         ->required();
                                 })->toArray()
                             )

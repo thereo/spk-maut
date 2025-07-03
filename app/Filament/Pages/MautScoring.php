@@ -43,6 +43,9 @@ class MautScoring extends Page
                     ->where('batch_id', $this->batchId)
                     ->first()?->value ?? 0;
 
+                // Enforce 1–5 scale
+                $value = max(1, min(5, $value));
+
                 $raw[$employee->id][$criterion->id] = $value;
             }
         }
@@ -51,8 +54,8 @@ class MautScoring extends Page
         $normalized = [];
         foreach ($criteria as $criterion) {
             $column = array_column($raw, $criterion->id);
-            $max = max($column) ?: 1;
-            $min = min($column) ?: 1;
+            $max = max(max($column), 5);
+            $min = min(min($column), 1);
 
             foreach ($batch->employees as $employee) {
                 $val = $raw[$employee->id][$criterion->id];
@@ -67,7 +70,11 @@ class MautScoring extends Page
         foreach ($normalized as $empId => $values) {
             foreach ($values as $criterionId => $val) {
                 $weight = $criteria->firstWhere('id', $criterionId)?->weight ?? 0;
-                $weighted[$empId][$criterionId] = $val * $weight;
+
+                // Convert percentage to decimal
+                $weightDecimal = $weight / 100;
+
+                $weighted[$empId][$criterionId] = $val * $weightDecimal;
             }
         }
 
