@@ -155,14 +155,14 @@
         <tbody>
             <tr>
                 @foreach ($criteria as $criterion)
-                    <td>{{ number_format($criterion->weight, 3) }}</td>
+                    <td>{{ number_format($criterion->weight) }}%</td>
                 @endforeach
-                <td><strong>{{ number_format($criteria->sum('weight'), 3) }}</strong></td>
+                <td><strong>{{ number_format($criteria->sum('weight')) }}%</strong></td>
             </tr>
         </tbody>
     </table>
 
-    @if(abs($criteria->sum('weight') - 1.0) > 0.001)
+    @if(abs($criteria->sum('weight') - 100) > 0.001)
         <div class="alert">
             <strong>Warning:</strong> Weights do not sum to 1.0. This may affect scoring accuracy.
         </div>

@@ -29,7 +29,7 @@
                                 <div class="flex flex-col items-center">
                                     <span>{{ $criterion->name }}</span>
                                     @if(isset($criterion->weight))
-                                        <span class="text-xs text-gray-400 mt-1">(Weight: {{ intval($criterion->weight * 100) }}%)</span>
+                                        <span class="text-xs text-gray-400 mt-1">(Weight: {{ intval($criterion->weight) }}%)</span>
                                     @endif
                                 </div>
                             </th>
@@ -98,7 +98,7 @@
                                 <div class="flex flex-col items-center">
                                     <span>{{ $criterion->name }}</span>
                                     @if(isset($criterion->weight))
-                                        <span class="text-xs text-gray-400 mt-1">(Weight: {{ intval($criterion->weight * 100) }}%)</span>
+                                        <span class="text-xs text-gray-400 mt-1">(Weight: {{ intval($criterion->weight) }}%)</span>
                                     @endif
                                 </div>
                             </th>
