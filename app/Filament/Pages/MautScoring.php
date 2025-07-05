@@ -43,35 +43,34 @@ class MautScoring extends Page
                     ->where('batch_id', $this->batchId)
                     ->first()?->value ?? 0;
 
-                // Enforce 1–5 scale
-                $value = max(1, min(5, $value));
-
                 $raw[$employee->id][$criterion->id] = $value;
             }
         }
 
-        // Normalization with benefit/cost logic
+        // ✅ PERBAIKAN: Normalisasi MAUT yang benar
+        // Hitung min dan max untuk setiap kriteria (X- dan X+)
         $normalized = [];
         foreach ($criteria as $criterion) {
             $column = array_column($raw, $criterion->id);
-            $max = max(max($column), 5);
-            $min = min(min($column), 1);
+            $max = max($column) ?: 1;  // X+
+            $min = min($column) ?: 1;  // X-
 
             foreach ($batch->employees as $employee) {
                 $val = $raw[$employee->id][$criterion->id];
-                $normalized[$employee->id][$criterion->id] = $criterion->type === 'benefit'
-                    ? ($max > 0 ? $val / $max : 0)
-                    : ($val > 0 ? $min / $val : 0);
+
+                // ✅ Formula MAUT standar untuk SEMUA kriteria: (Xi - X-) / (X+ - X-)
+                $normalized[$employee->id][$criterion->id] =
+                    ($max - $min > 0) ? ($val - $min) / ($max - $min) : 0;
             }
         }
 
-        // Weighting
+        // ✅ PERBAIKAN: Weighting dengan konversi persentase
         $weighted = [];
         foreach ($normalized as $empId => $values) {
             foreach ($values as $criterionId => $val) {
                 $weight = $criteria->firstWhere('id', $criterionId)?->weight ?? 0;
 
-                // Convert percentage to decimal
+                // ✅ Konversi persentase ke desimal
                 $weightDecimal = $weight / 100;
 
                 $weighted[$empId][$criterionId] = $val * $weightDecimal;
