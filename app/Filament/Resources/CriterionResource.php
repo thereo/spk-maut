@@ -41,7 +41,6 @@ class CriterionResource extends Resource
                             ->required()
                             ->options([
                                 'benefit' => 'Benefit (Higher is better)',
-                                'cost' => 'Cost (Lower is better)',
                             ]),
                     ])
             ]);
@@ -53,12 +52,12 @@ class CriterionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('weight')->sortable(),
-                Tables\Columns\BadgeColumn::make('type')
-                    ->colors([
-                        'success' => 'benefit',
-                        'danger' => 'cost',
-                    ])
-                    ->sortable(),
+                // Tables\Columns\BadgeColumn::make('type')
+                //     ->colors([
+                //         'success' => 'benefit',
+                //         'danger' => 'cost',
+                //     ])
+                //     ->sortable(),
             ])
             ->filters([
                 //
